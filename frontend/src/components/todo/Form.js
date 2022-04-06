@@ -1,13 +1,65 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { addTodo } from "../../actions/todos";
 
-export class Form extends Component {
+class Form extends Component {
+  state = {
+    title: "",
+    description: "",
+  };
+
+  static propTypes = {
+    addTodo: PropTypes.func.isRequired,
+  };
+
+  onSubmit = (e) => {
+    e.preventDefault();
+    const { title, description } = this.state;
+    const todo = { title, description };
+    this.props.addTodo(todo);
+    this.setState({
+      title: "",
+      description: "",
+    });
+  };
+  onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+
   render() {
+    const { title, description } = this.state;
     return (
-      <div>
-        Add todo Form
+      <div className="card card-body mt-4">
+        <h2>Add Todo</h2>
+        <form onSubmit={this.onSubmit}>
+          <div className="form-group">
+            <label>Title</label>
+            <input
+              type="text"
+              className="form-control"
+              value={title}
+              name="title"
+              onChange={this.onChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Description</label>
+            <input
+              type="text"
+              className="form-control"
+              value={description}
+              name="description"
+              onChange={this.onChange}
+            />
+          </div>
+          <div className="form-group">
+            <button className="btn btn-primary" type="submit">
+              Add
+            </button>
+          </div>
+        </form>
       </div>
-    )
+    );
   }
 }
 
-export default Form
+export default connect(null, { addTodo })(Form);
